@@ -1,20 +1,28 @@
-def get_team_game_data():
+import pandas as pd
+
+def get_team_game_data(nodes, edges):
     '''
     data for teams and games csv was sources from:
     http://www.masseyratings.com/
     
-    function loads 2 csv and names cols
+    function loads 2 csvs (no headers in either):
+    
+    format of nodes:
+    |Node|Node text name|
+    
+    format of edges:
+    |Node A|value of A|Node B|value of B|
     '''
     # load games csv
-    games_df = pd.read_csv('ncaa_2016_games.csv', header=None)
+    edges_df = pd.read_csv(edges, header=None)
     # load teams csv
-    teams_df = pd.read_csv('ncaa_2016_teams.csv', header=None)
+    nodes_df = pd.read_csv(nodes, header=None)
 
     # drop unneed cols (dates of games and home field advantage)
-    games_df.drop([0, 1, 3, 6], axis=1, inplace=True)
+#     games_df.drop([0, 1, 3, 6], axis=1, inplace=True)
     
     # rename cols
-    games_df.columns = ['team_a', 'a_score', 'team_b', 'b_score']
-    teams_df.columns = ['team_num', 'team_name']
+    edges_df.columns = ['node_a', 'a_value', 'node_b', 'b_value']
+    nodes_df.columns = ['node', 'node_text']
     
-    return games_df, teams_df
+    return edges_df, nodes_df
