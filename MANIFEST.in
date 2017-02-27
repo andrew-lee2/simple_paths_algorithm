@@ -1,0 +1,1 @@
+recursive-include simple_paths_algorithm/examples/*.csv
