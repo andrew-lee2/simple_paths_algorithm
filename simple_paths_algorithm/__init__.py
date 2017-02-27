@@ -2,23 +2,33 @@ import pandas as pd
 import networkx as nx
 import numpy as np
 
-def get_node_edge_data(nodes_csv, edges_csv):
+def get_node_edge_data(nodes_csv, edges_csv, header=False):
     '''
     data for teams and games csv was sources from:
     http://www.masseyratings.com/
 
-    function loads 2 csvs (no headers in either):
+    function loads 2 csvs (headers optional):
+
+    returns:
+        dataframe in same format as csv inputs
 
     format of nodes:
     |Node|Node text name|
 
     format of edges:
     |Node A|value of A|Node B|value of B|
+
     '''
+
+    if header is True:
+        header = 0
+    else:
+        header = None
+
     # load games csv
-    edges_df = pd.read_csv(edges_csv, header=None)
+    edges_df = pd.read_csv(edges_csv, header=header)
     # load teams csv
-    nodes_df = pd.read_csv(nodes_csv, header=None)
+    nodes_df = pd.read_csv(nodes_csv, header=header)
 
     # rename cols
     edges_df.columns = ['node_a', 'a_value', 'node_b', 'b_value']
@@ -47,13 +57,13 @@ def get_node_edge_lists(node_df, edge_df):
     return node_list, edge_tuple_list
 
 # make function that creates the graph from the csv
-def get_graph(nodes_csv, edges_csv):
+def get_graph(nodes_csv, edges_csv, header=False):
     '''
     placeholder
     '''
 
     # load in csvs
-    node_df, edge_df = get_node_edge_data(nodes_csv, edges_csv)
+    node_df, edge_df = get_node_edge_data(nodes_csv, edges_csv, header)
     # get node and edge lists
     node_list, edge_list = get_node_edge_lists(node_df, edge_df)
 
@@ -136,7 +146,7 @@ def get_graph_score(graph, depth):
 
     return node_score_df
 
-def get_simple_paths_result(nodes_csv, edges_csv, depth):
+def get_simple_paths_result(nodes_csv, edges_csv, depth, csv=False, header=False):
     '''
     placeholder
     '''
@@ -145,7 +155,8 @@ def get_simple_paths_result(nodes_csv, edges_csv, depth):
     scores_df = get_graph_score(graph, depth)
     results_df = pd.merge(nodes_df, scores_df, on='node', how='left')
     # save results to csv
-    results_df.to_csv('simple_paths_algo_results.csv', index=False)
+    if csv is True:
+        results_df.to_csv('simple_paths_algo_results.csv', index=False)
 
     return results_df
     
