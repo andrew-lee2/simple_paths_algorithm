@@ -2,7 +2,7 @@ import pandas as pd
 import networkx as nx
 import numpy as np
 
-def get_node_edge_data(nodes_csv, edges_csv, header=False):
+def get_node_edge_data(nodes, edges, header=False):
     '''
     data for teams and games csv was sources from:
     http://www.masseyratings.com/
@@ -25,10 +25,19 @@ def get_node_edge_data(nodes_csv, edges_csv, header=False):
     else:
         header = None
 
-    # load games csv
-    edges_df = pd.read_csv(edges_csv, header=header)
-    # load teams csv
-    nodes_df = pd.read_csv(nodes_csv, header=header)
+    if isinstance(nodes, str):
+        nodes_df = pd.read_csv(nodes, header=header)
+    elif isinstance(nodes, pd.DataFrame):
+        nodes_df = nodes
+    else:
+        raise TypeError('node variable can only be path to csv or pandas dataframe')
+
+    if isinstance(edges, str):
+        edges_df = pd.read_csv(nodes, header=header)
+    elif isinstance(edges, pd.DataFrame):
+        edges_df = edges
+    else:
+        raise TypeError('node variable can only be path to csv or pandas dataframe')
 
     # rename cols
     edges_df.columns = ['node_a', 'a_value', 'node_b', 'b_value']
@@ -57,13 +66,13 @@ def get_node_edge_lists(node_df, edge_df):
     return node_list, edge_tuple_list
 
 # make function that creates the graph from the csv
-def get_graph(nodes_csv, edges_csv, header=False):
+def get_graph(nodes, edges, header=False):
     '''
     placeholder
     '''
 
     # load in csvs
-    node_df, edge_df = get_node_edge_data(nodes_csv, edges_csv, header)
+    node_df, edge_df = get_node_edge_data(nodes, edges, header)
     # get node and edge lists
     node_list, edge_list = get_node_edge_lists(node_df, edge_df)
 
@@ -146,12 +155,12 @@ def get_graph_score(graph, depth):
 
     return node_score_df
 
-def get_simple_paths_result(nodes_csv, edges_csv, depth, csv=False, header=False):
+def get_simple_paths_result(nodes, edges, depth, csv=False, header=False):
     '''
     placeholder
     '''
 
-    graph, nodes_df = get_graph(nodes_csv, edges_csv)
+    graph, nodes_df = get_graph(nodes, edges)
     scores_df = get_graph_score(graph, depth)
     results_df = pd.merge(nodes_df, scores_df, on='node', how='left')
     # save results to csv
