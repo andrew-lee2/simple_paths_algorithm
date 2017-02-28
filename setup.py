@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='simple_paths_algorithm',
-    version='0.0.0',
+    version='0.0.1',
     description='implementation of simple paths algorithm',
     url='https://github.com/andrew-lee2/simple_paths_algorithm',
     author='Andrew Lee, Douglas Shier',

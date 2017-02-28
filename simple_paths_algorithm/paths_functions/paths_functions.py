@@ -4,11 +4,11 @@ import numpy as np
 
 def get_node_edge_data(nodes, edges, header=False):
     '''
-    data for teams and games csv was sources from:
-    http://www.masseyratings.com/
+    inputs:
 
-    function loads 2 csvs or dataframes (headers optional):
-        node needs to be integers, node names can be any format
+    nodes, edges - csv or dataframe (headers optional):
+        nodes need to be integers, node names can be any format
+    header - if csv contains header (boolean)
     -------
     returns:
         dataframe in same format as csv inputs
@@ -18,7 +18,6 @@ def get_node_edge_data(nodes, edges, header=False):
 
     format of edges:
     |Node A|value of A|Node B|value of B|
-
     '''
 
     if header is True:
