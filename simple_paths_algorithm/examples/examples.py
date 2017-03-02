@@ -26,9 +26,21 @@ def example_graph_2():
     '''
     return load_csv('ex_2_nodes.csv'), load_csv('ex_2_edges.csv')
 
+def ncaa_2009_data():
+    '''
+    2009 ncaa football data, data from:
+        http://www.masseyratings.com/
+    explaination of fields:
+        http://www.masseyratings.com/scorehelp.htm
+    '''
+    return load_csv('ncaa_2009_teams.csv'), load_csv('ncaa_2009_games.csv')
+
+
 def ncaa_2016_data():
     '''
     2016 ncaa football data, data from:
         http://www.masseyratings.com/
+    explaination of fields:
+        http://www.masseyratings.com/scorehelp.htm
     '''
     return load_csv('ncaa_2016_teams.csv'), load_csv('ncaa_2016_games.csv')

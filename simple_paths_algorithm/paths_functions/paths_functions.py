@@ -61,9 +61,10 @@ def get_node_edge_lists(node_df, edge_df):
     # construct tuple list
     edge_tuple_list = []
     for _, edge in edge_df.iterrows():
-        # explain how we handle ties? though i think its impossible to tie in college football?
+        # if tie then 2 edges will be added in either direction
         if edge.a_value == edge.b_value:
-            continue
+            edge_tuple_list.append((edge.node_a, edge.node_b))
+            edge_tuple_list.append((edge.node_b, edge.node_a))
         elif edge.a_value > edge.b_value:
             edge_tuple_list.append((edge.node_a, edge.node_b))
         else:
