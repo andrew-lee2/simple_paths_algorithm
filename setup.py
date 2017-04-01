@@ -8,7 +8,7 @@ DESCRIPTION = (
 
 setup(
     name='simple_paths_algorithm',
-    version='0.0.6',
+    version='0.0.8',
     description=DESCRIPTION,
     url='https://github.com/andrew-lee2/simple_paths_algorithm',
     author='Andrew Lee, Douglas Shier',
