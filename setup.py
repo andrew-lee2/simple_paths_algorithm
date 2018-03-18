@@ -8,7 +8,7 @@ DESCRIPTION = (
 
 setup(
     name='simple_paths_algorithm',
-    version='0.0.8',
+    version='0.1.1',
     description=DESCRIPTION,
     url='https://github.com/andrew-lee2/simple_paths_algorithm',
     author='Andrew Lee, Douglas Shier',
@@ -18,8 +18,9 @@ setup(
     zip_safe=False,
     include_package_data=True,
     install_requires=[
-        'pandas',
-        'networkx',
+        'pandas==0.22.0',
+        'networkx==2.1',
+        'numpy==1.14.2',
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
