@@ -10,6 +10,7 @@ class TestPath(TestCase):
     test class for paths_function.py
     '''
     # run functions in class and then test outputs
+    # TODO need to redo all of this
     nodes, edges = example_graph_1()
     nodes_df, edges_df = get_node_edge_data(nodes, edges)
     nodes_list, edges_tuple = get_node_edge_lists(nodes_df, edges_df)
@@ -65,7 +66,7 @@ class TestPath(TestCase):
         '''
         test node 1 weight
         '''
-        eq_(self.weight_dict[1], 1/float(3))
+        eq_(self.weight_dict[1], 1 / float(3))
 
     def test_get_node_score(self):
         '''

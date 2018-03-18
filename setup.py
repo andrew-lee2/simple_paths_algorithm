@@ -18,8 +18,9 @@ setup(
     zip_safe=False,
     include_package_data=True,
     install_requires=[
-        'pandas',
-        'networkx',
+        'pandas==0.22.0',
+        'networkx==2.1',
+        'numpy==1.14.2',
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
