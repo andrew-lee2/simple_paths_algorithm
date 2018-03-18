@@ -5,6 +5,12 @@ import numpy as np
 
 class SimplePaths(object):
     def __init__(self, nodes, edges, depth, header=False):
+        """
+        :param nodes: dataframe or csv
+        :param edges: dataframe or csv
+        :param depth: int
+        :param header: bool
+        """
         self.nodes = nodes
         self.edges = edges
         self.depth = depth
@@ -18,8 +24,64 @@ class SimplePaths(object):
         self._get_node_edge_lists()
         self._get_graph()
 
+    def get_graph_score(self):
+        """
+        inputs:
+            graph - directed networkx graph object
+            depth - maximum length of simple path
+        -------
+        returns:
+            node_score_df - dataframe of simple_path scores for all nodes
+                in graph, format: |node|node score|
+        """
+        node_weights = self._get_node_weights()
+
+        node_info_list = []
+
+        for node in self.node_list:
+            node_paths_list = self._get_node_simple_paths(node)
+            node_score = SimplePaths.get_node_score(node_paths_list, node_weights)
+
+            node_info_list.append([node, node_score])
+
+        node_score_df = pd.DataFrame(node_info_list, columns=['node', 'node_score'])
+
+        return node_score_df
+
+    def get_simple_paths_result(self, csv_name=''):
+        """
+        inputs:
+            nodes, edges - csv or dataframe
+
+            format of nodes:
+            |Node|Node text name|
+
+            format of edges:
+            |Node A|value of A|Node B|value of B|
+
+            depth - maximum length of simple path
+
+            csv - save results as csv (boolean)
+            header - does csv of dataframe contain header (boolean)
+        ------
+        returns:
+            results_df - dataframe of final results
+            format:
+                |node|node_text|node_score|
+        """
+        scores_df = self.get_graph_score()
+        results_df = pd.merge(self.nodes_df, scores_df, on='node', how='left')
+
+        if len(csv_name) > 0:
+            results_df.to_csv(csv_name, index=False)
+
+        return results_df
+
+    def get_graph_diameter(self):
+        return nx.diameter(self.di_graph)
+
     def _get_node_edge_data(self):
-        '''
+        """
         inputs: nodes, edges - csv or dataframe (headers optional):
             nodes need to be integers, node names can be any format
         header - if csv contains header (boolean)
@@ -31,7 +93,7 @@ class SimplePaths(object):
 
         format of edges:
         |Node A|value of A|Node B|value of B|
-        '''
+        """
         if self.header is True:
             header = 0
         else:
@@ -58,13 +120,12 @@ class SimplePaths(object):
         self.edges_df = edges_df
 
     def _get_node_edge_lists(self):
-        '''
+        """
         returns:
             node_list - list of integers
             edge_tuple_list - list of tuples where each tuple is an edge of origin and
                 terminal node
-        '''
-
+        """
         node_list = [int(node) for node in self.nodes_df.node.tolist()]
 
         edge_tuple_list = []
@@ -82,11 +143,11 @@ class SimplePaths(object):
         self.edge_tuple_list = edge_tuple_list
 
     def _get_graph(self):
-        '''
+        """
         returns:
             di_graph - directed graph, using networkx
             node_df - dataframe of nodes, see get_node_edge_data for format
-        '''
+        """
         di_graph = nx.DiGraph()
         di_graph.add_nodes_from(self.node_list)
         di_graph.add_edges_from(self.edge_tuple_list)
@@ -94,7 +155,7 @@ class SimplePaths(object):
         self.di_graph = di_graph
 
     def _get_node_simple_paths(self, starting_node):
-        '''
+        """
         inputs:
             graph - directed graph, networkx object
             nodes - list of nodes to get paths for (all nodes in graph)
@@ -104,7 +165,7 @@ class SimplePaths(object):
         returns:
             list of list where each list is a simple path from the starting_node,
             there will be len(nodes) - 1 elements in list
-        '''
+        """
 
         node_paths_list = []
 
@@ -119,14 +180,14 @@ class SimplePaths(object):
         return node_paths_list
 
     def _get_node_weights(self):
-        '''
+        """
         inputs:
             graph - directed networkx graph object
             list_of_nodes - list of nodes in graph
         -------
         returns:
             weight_dict - dictionary of node weights, format {node: node weight}
-        '''
+        """
         node_all_list = self.di_graph.degree(self.node_list)
 
         weight_dict = {}
@@ -139,15 +200,14 @@ class SimplePaths(object):
 
     @staticmethod
     def get_node_score(node_paths_list, weight_dict):
-        '''
+        """
         inputs:
             node_paths_list - list of lists of node paths from origin node_paths_list
             weight_dict - dictionary of weights of all nodes, format {node: node weight}
         --------
         returns:
             node_value - score of simple_path_algorithm for node (float)
-        '''
-
+        """
         node_value = 0
         for path in node_paths_list:
             temp_path_value_list = []
@@ -157,56 +217,3 @@ class SimplePaths(object):
             node_value += np.prod(temp_path_value_list)
 
         return node_value
-
-    def get_graph_score(self):
-        '''
-        inputs:
-            graph - directed networkx graph object
-            depth - maximum length of simple path
-        -------
-        returns:
-            node_score_df - dataframe of simple_path scores for all nodes
-                in graph, format: |node|node score|
-        '''
-        node_weights = self._get_node_weights()
-
-        node_info_list = []
-
-        for node in self.node_list:
-            node_paths_list = self._get_node_simple_paths(node)
-            node_score = SimplePaths.get_node_score(node_paths_list, node_weights)
-
-            node_info_list.append([node, node_score])
-
-        node_score_df = pd.DataFrame(node_info_list, columns=['node', 'node_score'])
-
-        return node_score_df
-
-    def get_simple_paths_result(self, csv_name=''):
-        '''
-        inputs:
-            nodes, edges - csv or dataframe
-
-            format of nodes:
-            |Node|Node text name|
-
-            format of edges:
-            |Node A|value of A|Node B|value of B|
-
-            depth - maximum length of simple path
-
-            csv - save results as csv (boolean)
-            header - does csv of dataframe contain header (boolean)
-        ------
-        returns:
-            results_df - dataframe of final results
-            format:
-                |node|node_text|node_score|
-        '''
-        scores_df = self.get_graph_score()
-        results_df = pd.merge(self.nodes_df, scores_df, on='node', how='left')
-
-        if len(csv_name) > 0:
-            results_df.to_csv(csv_name, index=False)
-
-        return results_df
