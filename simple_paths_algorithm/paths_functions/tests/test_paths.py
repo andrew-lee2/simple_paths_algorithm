@@ -5,7 +5,8 @@ from nose.tools import eq_
 import networkx
 
 ex1_nodes, ex1_edges = example_graph_1()
-simple_path = SimplePaths(ex1_nodes, ex1_edges, 4)
+simple_path = SimplePaths(ex1_nodes, ex1_edges)
+
 
 class TestPath(TestCase):
 
@@ -13,7 +14,7 @@ class TestPath(TestCase):
         """
         test get_simple_paths_result
         """
-        results = simple_path.get_simple_paths_result()
+        results = simple_path.get_simple_paths_result(4)
         eq_(round(results.node_score[0], 2), .96)
 
     def test_get_node_edge_data_nodes(self):
@@ -51,7 +52,7 @@ class TestPath(TestCase):
         test simple paths output of node 1
         """
         test_paths_list = [[1, 2], [1, 3, 2], [1, 2, 4, 3], [1, 3], [1, 2, 4], [1, 3, 2, 4]]
-        paths_list = simple_path._get_node_simple_paths(1)
+        paths_list = simple_path._get_node_simple_paths(1, 4)
         self.assertCountEqual(paths_list, test_paths_list)
 
     def test_get_node_weights(self):
@@ -66,7 +67,7 @@ class TestPath(TestCase):
         test value of node 1
         """
         weight_dict = simple_path._get_node_weights()
-        paths_list = simple_path._get_node_simple_paths(1)
+        paths_list = simple_path._get_node_simple_paths(1, 4)
         node_score = simple_path.get_node_score(paths_list, weight_dict)
         eq_(round(node_score, 2), .96)
 
@@ -74,7 +75,7 @@ class TestPath(TestCase):
         """
         test score of node 1
         """
-        node_scores = simple_path.get_graph_score()
+        node_scores = simple_path.get_graph_score(4)
         eq_(round(node_scores.node_score[0], 2), .96)
 
     def test_get_graph_diameter(self):
