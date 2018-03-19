@@ -4,16 +4,14 @@ import numpy as np
 
 
 class SimplePaths(object):
-    def __init__(self, nodes, edges, depth, header=False):
+    def __init__(self, nodes, edges, header=False):
         """
         :param nodes: dataframe or csv
         :param edges: dataframe or csv
-        :param depth: int
         :param header: bool
         """
         self.nodes = nodes
         self.edges = edges
-        self.depth = depth
         self.header = header
         self.nodes_df = None
         self.edges_df = None
@@ -24,7 +22,7 @@ class SimplePaths(object):
         self._get_node_edge_lists()
         self._get_graph()
 
-    def get_graph_score(self):
+    def get_graph_score(self, depth):
         """
         inputs:
             graph - directed networkx graph object
@@ -39,7 +37,7 @@ class SimplePaths(object):
         node_info_list = []
 
         for node in self.node_list:
-            node_paths_list = self._get_node_simple_paths(node)
+            node_paths_list = self._get_node_simple_paths(node, depth)
             node_score = SimplePaths.get_node_score(node_paths_list, node_weights)
 
             node_info_list.append([node, node_score])
@@ -48,7 +46,7 @@ class SimplePaths(object):
 
         return node_score_df
 
-    def get_simple_paths_result(self, csv_name=''):
+    def get_simple_paths_result(self, depth, csv_name=''):
         """
         inputs:
             nodes, edges - csv or dataframe
@@ -69,7 +67,7 @@ class SimplePaths(object):
             format:
                 |node|node_text|node_score|
         """
-        scores_df = self.get_graph_score()
+        scores_df = self.get_graph_score(depth)
         results_df = pd.merge(self.nodes_df, scores_df, on='node', how='left')
 
         if len(csv_name) > 0:
@@ -154,7 +152,7 @@ class SimplePaths(object):
 
         self.di_graph = di_graph
 
-    def _get_node_simple_paths(self, starting_node):
+    def _get_node_simple_paths(self, starting_node, depth):
         """
         inputs:
             graph - directed graph, networkx object
@@ -174,7 +172,7 @@ class SimplePaths(object):
             if node == starting_node:
                 continue
             else:
-                paths_temp = nx.all_simple_paths(self.di_graph, starting_node, node, cutoff=self.depth)
+                paths_temp = nx.all_simple_paths(self.di_graph, starting_node, node, cutoff=depth)
                 node_paths_list += list(paths_temp)
 
         return node_paths_list
