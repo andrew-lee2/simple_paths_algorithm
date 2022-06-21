@@ -20,7 +20,7 @@ setup(
     install_requires=[
         'pandas==0.22.0',
         'networkx==2.1',
-        'numpy==1.14.2',
+        'numpy==1.22.0',
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
